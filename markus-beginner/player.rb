@@ -52,16 +52,16 @@ class Player
     @current_warrior.rest!
   end
 
-  def was_attacked?
-    health < (@health_last_turn || 0)
-  end
-
   def walk!
     if @is_backward
       @current_warrior.walk! :backward
     else
       @current_warrior.walk!
     end
+  end
+
+  def was_attacked?
+    health < (@health_last_turn || 0)
   end
 
   def play_turn(warrior)
