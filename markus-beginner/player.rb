@@ -1,7 +1,20 @@
+require "warrior_mind.rb"
+
+
 class Player
+
+  # Constants
+
   MIN_TOTAL_ATTACKING_DAMAGE_SLUDGE = 6
   MIN_TOTAL_ATTACKING_DAMAGE_THICK_SLUDGE = 12
   MIN_TOTAL_ATTACKING_DAMAGE_ARCHER = 6
+
+  MIN_DAMAGE_TO_RETREAT_SLUDGE = 0
+  MIN_DAMAGE_TO_RETREAT_THICK_SLUDGE = 0
+  MIN_DAMAGE_TO_RETREAT_ARCHER = 6
+
+
+  # Class methods
 
   def self.min_health_to_survive_attack
     [
@@ -11,10 +24,24 @@ class Player
     ].max + 1
   end
 
+  def self.min_health_to_survive_retreat
+    [
+      MIN_DAMAGE_TO_RETREAT_SLUDGE,
+      MIN_DAMAGE_TO_RETREAT_THICK_SLUDGE,
+      MIN_DAMAGE_TO_RETREAT_ARCHER
+    ].max + 1
+  end
+
+
+  # Initialization method
+
   def initialize
     @health_last_turn = nil
     @is_backward = true
   end
+
+
+  # Instance methods
 
   def attack!
     if @is_backward
@@ -26,6 +53,10 @@ class Player
 
   def can_survive_any_attack?
     health >= Player.min_health_to_survive_attack
+  end
+
+  def damage_last_turn
+    (@health_last_turn || health) - health
   end
 
   def feel
@@ -52,6 +83,18 @@ class Player
     @current_warrior.rest!
   end
 
+  def retreat!
+    if @is_backward
+      @current_warrior.walk!
+    else
+      @current_warrior.walk! :backward
+    end
+  end
+
+  def should_retreat?
+    was_attacked? && (health - damage_last_turn) < Player.min_health_to_survive_retreat
+  end
+
   def walk!
     if @is_backward
       @current_warrior.walk! :backward
@@ -64,6 +107,9 @@ class Player
     health < (@health_last_turn || 0)
   end
 
+
+  # Play-turn method
+
   def play_turn(warrior)
     @current_warrior = warrior
     next_space = feel
@@ -72,8 +118,12 @@ class Player
       @is_backward = false
     elsif next_space.captive?
       rescue!
-    elsif !can_survive_any_attack? && !was_attacked?
-      rest!
+    elsif !can_survive_any_attack?
+      if !was_attacked?
+        rest!
+      else
+        retreat!
+      end
     elsif next_space.empty?
       walk!
     else
