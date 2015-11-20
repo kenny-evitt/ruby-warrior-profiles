@@ -20,7 +20,9 @@ class Player
   end
 
   def play_turn(warrior)
-    if warrior.health < Player.min_health_to_survive_attack && !was_attacked(warrior)
+    if current_space.captive?
+      warrior.rescue!
+    elsif warrior.health < Player.min_health_to_survive_attack && !was_attacked(warrior)
       warrior.rest!
     elsif warrior.feel.empty?
       warrior.walk!
