@@ -35,7 +35,7 @@ When playing [the BLOC-hosted version of Ruby Warrior](https://www.bloc.io/ruby-
 
 My problem now is that I want the warrior to retreat, so that it can rest, as needed, if they're being shot at by an archer. But I need to incorporate a longer memory so that the warrior doesn't simply oscillate between walking towards an archer and retreating away from them when the warrior's HP are near the 'minimum HP to survive retreating'.
 
-TODO: Handle walking and attacking an archer and retreating when needed.
+I'd like to implement a nice way to handle walking and attacking an archer and retreating when needed, but there's no trivial way to determine that the closest enemy *is* an archer.
 
 ## Strategy
 

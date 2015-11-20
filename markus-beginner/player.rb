@@ -1,4 +1,4 @@
-require "warrior_mind.rb"
+require "level_map.rb"
 
 
 class Player
