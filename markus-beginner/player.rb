@@ -1,4 +1,4 @@
-require "level_map.rb"
+require "level.rb"
 
 
 class Player
@@ -38,6 +38,7 @@ class Player
   def initialize
     @health_last_turn = nil
     @is_backward = true
+    @level = Level.new
   end
 
 
@@ -112,24 +113,25 @@ class Player
 
   def play_turn(warrior)
     @current_warrior = warrior
-    next_space = feel
+    walk!
+#     next_space = feel
 
-    if next_space.wall?
-      @is_backward = false
-    elsif next_space.captive?
-      rescue!
-    elsif !can_survive_any_attack?
-      if !was_attacked?
-        rest!
-      else
-        retreat!
-      end
-    elsif next_space.empty?
-      walk!
-    else
-      attack!
-    end
+#     if next_space.wall?
+#       @is_backward = false
+#     elsif next_space.captive?
+#       rescue!
+#     elsif !can_survive_any_attack?
+#       if !was_attacked?
+#         rest!
+#       else
+#         retreat!
+#       end
+#     elsif next_space.empty?
+#       walk!
+#     else
+#       attack!
+#     end
 
-    @health_last_turn = warrior.health
+#     @health_last_turn = warrior.health
   end
 end
