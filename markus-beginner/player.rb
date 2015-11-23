@@ -62,15 +62,16 @@ class Player
   end
 
   def feel
-    left_space = @current_warrior.feel :backward
-    right_space = @current_warrior.feel
-    @level.update(left_space, right_space)
+    ruby_warrior_left_space = @current_warrior.feel :backward
+    ruby_warrior_right_space = @current_warrior.feel
+    @level.update(ruby_warrior_left_space, ruby_warrior_right_space)
+
     print "DEBUG - Level: _#{@level}_\n"
 
     if @is_backward
-      left_space
+      @level.left_space
     else
-      right_space
+      @level.right_space
     end
   end
 
@@ -123,7 +124,6 @@ class Player
 
   def play_turn(warrior)
     @current_warrior = warrior
-    next_space = feel
 
     case @mode
     when :explore
@@ -173,11 +173,16 @@ class Player
       end
     end
 
-    next_space = @level.next_space_towards_target(@current_enemy_target)
-
-    if next_space.empty?
-      walk!
+    if @current_enemy_target.nil?
+      explore!
     else
-      attack!
+      next_space = @level.next_space_towards_target(@current_enemy_target)
+
+      if next_space.empty?
+        walk!
+      else
+        attack!
+      end
     end
+  end
 end

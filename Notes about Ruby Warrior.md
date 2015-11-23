@@ -61,6 +61,8 @@ The warrior should always be capable of surviving a full retreat, i.e. reaching 
 
 If a warrior kills an enemy and there is another enemy in the space after, the second enemy won't attack until the next turn, and, as-of level 6, the only enemy capable of attacking from a non-adjacent space is the archer.
 
+There are possible levels for which the warrior will either definitely be killed by enemies or which there is no way to kill all the enemies, or, sometimes, even do anything other than walk between two spaces (forever). *Strategies should, if
+
 #### Fighting Archers
 
 Archers can shoot, and cause damage to the warrior, from a range of 2 spaces, i.e. when there are up to 2 empty spaces between them and the warrior.
