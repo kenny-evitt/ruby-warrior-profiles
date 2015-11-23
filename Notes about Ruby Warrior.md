@@ -14,10 +14,10 @@ Does the warrior die if their HP falls to (exactly) 0? YES
 | ------------ | -- | -------- | --------- | -------- | --------- | ---------- |
 | Sludge       | 12 |        5 |         3 |          |        6  |         0  |
 | Thick Sludge | 24 |        5 |         3 |          |       12  |         0  |
-| Archer       |  7 |        5 |           |        3 |       12  |         2  |
+| Archer       |  7 |        5 |           |        3 |       12  |         3  |
 | ------------ | -- | -------- | --------- | -------- | --------- | ---------- |
 
-Min. total attacking damage assumes that the warrior is initially out of attacking range, that there is only one of that type of enemy in a hypothetical level, that the warrior is moving forward until attacking (forward), and that the warrior attacks until killing the enemy.
+Min. total attacking damage assumes that the warrior is initially out of attacking range, for both the warrior and the enemy, that there is only one of that type of enemy in a hypothetical level, that the warrior is moving forward until attacking (forward), and that the warrior attacks until killing the enemy.
 
 Values in the form of *x+* imply that the ultimate value is unknown, based on experience alone. Determining that any value *is* known is, of course, based on a number of assumptions, e.g. that enemies always attack if they can.
 
@@ -58,6 +58,8 @@ Assuming that enemies do not move, nor rest (refresh their HP), the warrior shou
 Retreating is walking to or towards a 'safe' space, i.e. a space from which no enemies can attack the warrior. Note that in some (possible) levels, there is no safe space that can be reached from the warrior's current space.
 
 The warrior should always be capable of surviving a full retreat, i.e. reaching a safe space, so that they can then rest.
+
+If a warrior kills an enemy and there is another enemy in the space after, the second enemy won't attack until the next turn, and, as-of level 6, the only enemy capable of attacking from a non-adjacent space is the archer.
 
 #### Fighting Archers
 

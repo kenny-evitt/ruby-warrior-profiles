@@ -1,4 +1,4 @@
-require "level.rb"
+require_relative "level"
 
 
 class Player
@@ -7,7 +7,7 @@ class Player
 
   MIN_TOTAL_ATTACKING_DAMAGE_SLUDGE = 6
   MIN_TOTAL_ATTACKING_DAMAGE_THICK_SLUDGE = 12
-  MIN_TOTAL_ATTACKING_DAMAGE_ARCHER = 6
+  MIN_TOTAL_ATTACKING_DAMAGE_ARCHER = 12
 
   MIN_DAMAGE_TO_RETREAT_SLUDGE = 0
   MIN_DAMAGE_TO_RETREAT_THICK_SLUDGE = 0
@@ -39,6 +39,7 @@ class Player
     @health_last_turn = nil
     @is_backward = true
     @level = Level.new
+    @mode = :explore
   end
 
 
@@ -52,7 +53,7 @@ class Player
     end
   end
 
-  def can_survive_any_attack?
+  def can_survive_attacking_any_enemy?
     health >= Player.min_health_to_survive_attack
   end
 
@@ -61,10 +62,15 @@ class Player
   end
 
   def feel
+    left_space = @current_warrior.feel :backward
+    right_space = @current_warrior.feel
+    @level.update(left_space, right_space)
+    print "DEBUG - Level: _#{@level}_\n"
+
     if @is_backward
-      @current_warrior.feel :backward
+      left_space
     else
-      @current_warrior.feel
+      right_space
     end
   end
 
@@ -87,8 +93,10 @@ class Player
   def retreat!
     if @is_backward
       @current_warrior.walk!
+      @level.walk! :right
     else
       @current_warrior.walk! :backward
+      @level.walk! :left
     end
   end
 
@@ -99,8 +107,10 @@ class Player
   def walk!
     if @is_backward
       @current_warrior.walk! :backward
+      @level.walk! :left
     else
       @current_warrior.walk!
+      @level.walk! :right
     end
   end
 
@@ -113,25 +123,61 @@ class Player
 
   def play_turn(warrior)
     @current_warrior = warrior
-    walk!
-#     next_space = feel
+    next_space = feel
 
-#     if next_space.wall?
-#       @is_backward = false
-#     elsif next_space.captive?
-#       rescue!
-#     elsif !can_survive_any_attack?
-#       if !was_attacked?
-#         rest!
-#       else
-#         retreat!
-#       end
-#     elsif next_space.empty?
-#       walk!
-#     else
-#       attack!
-#     end
+    case @mode
+    when :explore
+      explore!
+    when :fight
+      fight!
+    else
+      explore!
+    end
 
-#     @health_last_turn = warrior.health
+    @health_last_turn = warrior.health
   end
+
+
+  # Mode methods
+
+  def explore!
+    @mode = :explore
+    next_space = feel
+
+    if next_space.enemy?
+      fight! next_space
+    elsif was_attacked?
+      fight!
+    elsif next_space.wall?
+      @is_backward = false
+      walk!
+    elsif next_space.captive?
+      rescue!
+    elsif next_space.empty?
+      walk!
+    end
+  end
+
+  def fight!(enemy_target_space = nil)
+    @mode = :fight
+
+    if !enemy_target_space.nil?
+      @current_enemy_target = enemy_target_space
+    end
+
+    if @current_enemy_target.nil?
+      @current_enemy_target = if @is_backward
+        @level.find_next_enemy :left
+      else
+        @level.find_next_enemy :right
+      end
+    end
+
+    next_space = @level.next_space_towards_target(@current_enemy_target)
+
+    if next_space.empty?
+      walk!
+    else
+      attack!
+    end
 end
