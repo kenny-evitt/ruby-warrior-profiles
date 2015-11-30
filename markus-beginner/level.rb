@@ -5,6 +5,18 @@ require_relative "space"
 
 class Level
 
+  def self.to_s(spaces)
+    reduce_spaces_to_s(spaces) { |space| space.to_s }
+  end
+
+  def self.reduce_spaces_to_s(spaces)
+    spaces
+    .to_a
+    .sort
+    .map { |index_space_key_value_array| index_space_key_value_array[1] }
+    .reduce("") { |s, space| s << yield(space) }
+  end
+
   # Initialization method
 
   def initialize
@@ -116,24 +128,12 @@ class Level
 
 
   ##
-  # Print info about the known spaces.
-
-  def print
-    reduce_spaces_to_s { |space| space.to_s }
-  end
-
-
-  ##
   # Builds a string representing the known spaces.
   #
   # Accepts a block with a space argument that should return a string representation of the supplied space.
 
   def reduce_spaces_to_s
-    @spaces
-    .to_a
-    .sort
-    .map { |index_space_key_value_array| index_space_key_value_array[1] }
-    .reduce("") { |s, space| s << yield(space) }
+    Level.reduce_spaces_to_s(@spaces, &Proc.new)
   end
 
 
